@@ -18,9 +18,11 @@ function loadSession() {
 
 
 function renderStatusMessage(containerElement, message) {
-    containerElement.innerHTML = "<p>" + message + "</p>";   // UNSAFE
+    containerElement.textContent = "";
+    const p = document.createElement("p");
+    p.textContent = message;
+    containerElement.appendChild(p);
 }
-
 
 
 //  Q4.B  Search Query Sanitization
@@ -30,21 +32,28 @@ function renderStatusMessage(containerElement, message) {
 
 
 function sanitizeSearchQuery(input) {
-    // TODO: Implement sanitization.
-    // Requirements:
-    //   - Allow only letters, digits, spaces, hyphens, underscores
-    //   - Trim leading/trailing whitespace before processing
-    //   - Max 40 characters
-    //   - Return null if the result is empty after sanitization
-    return input;   // UNSAFE – returns raw input unchanged
+    if (typeof input !== "string") return null;
+
+    const trimmed = input.trim();
+    const sanitized = trimmed.replace(/[^A-Za-z0-9 _-]/g, "").substring(0, 40);
+
+    if (sanitized.length === 0) return null;
+
+    return sanitized;
 }
+
 
 function performSearch(query) {
     const sanitized = sanitizeSearchQuery(query);
     const label = document.getElementById("search-label");
-    label.innerHTML = "Showing results for: " + sanitized;  // UNSAFE
-}
 
+    if (sanitized === null) {
+        label.textContent = "Showing results for: ";
+        return;
+    }
+
+    label.textContent = "Showing results for: " + sanitized;
+}
 
 
 //  Application Bootstrap

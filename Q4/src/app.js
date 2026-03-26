@@ -4,9 +4,25 @@
 
 
 function loadSession() {
-    const raw = sessionStorage.getItem("session");
-    const session = JSON.parse(raw);          // No try/catch
-    return session;                            // No field validation
+    try {
+        const raw = sessionStorage.getItem("session");
+        if (!raw) return null;
+
+        const session = JSON.parse(raw);
+
+        if (
+            !session ||
+            typeof session.userId !== "string" || session.userId.trim() === "" ||
+            typeof session.role !== "string" || session.role.trim() === "" ||
+            typeof session.displayName !== "string" || session.displayName.trim() === ""
+        ) {
+            return null;
+        }
+
+        return session;
+    } catch (e) {
+        return null;
+    }
 }
 
 
